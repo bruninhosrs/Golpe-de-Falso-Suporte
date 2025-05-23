@@ -1,0 +1,9 @@
+# Arquivos de IDEs
+.idea/
+.vscode/
+
+# Arquivos de compilação
+*.class
+*.log
+/target/
+/bin/
