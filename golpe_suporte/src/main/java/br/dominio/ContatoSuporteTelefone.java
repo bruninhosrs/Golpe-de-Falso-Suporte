@@ -2,7 +2,7 @@ package br.dominio;
 
 public class ContatoSuporteTelefone extends ContatoSuporte {
 
-    public ContatoSuporteTelefone(String nome, String telefone) {
+    public ContatoSuporteTelefone(String nome, String telefone, String email) {
         super(nome, telefone, null);
     }
 

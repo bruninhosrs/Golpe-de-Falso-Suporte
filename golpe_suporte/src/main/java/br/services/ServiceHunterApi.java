@@ -7,6 +7,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Properties;
 
+import br.models.HunterApiResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 public class ServiceHunterApi {
 
     private String apiKey;
@@ -31,10 +35,7 @@ public class ServiceHunterApi {
             String urlStr = "https://api.hunter.io/v2/email-verifier?email=" + email + "&api_key=" + apiKey;
             URI uri = URI.create(urlStr);
 
-            // Cria o cliente HTTP
             HttpClient client = HttpClient.newHttpClient();
-
-            // Cria a requisição GET
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(uri)
                     .GET()
@@ -47,9 +48,15 @@ public class ServiceHunterApi {
             String body = response.body();
 
             if (statusCode == 200) {
-                // Aqui você deve processar o body JSON para analisar validade
-                System.out.println("Resposta da API: " + body);
-                return true; // Retorne conforme o resultado do parse
+
+                ObjectMapper mapper = new ObjectMapper();
+                HunterApiResponse apiResponse = mapper.readValue(body, HunterApiResponse.class);
+
+                String status = apiResponse.getData().getStatus();
+                return "valid".equalsIgnoreCase(status);
+
+                // System.out.println("Resposta da API: " + body);
+                //return true; // Retorne conforme o resultado do parse
             } else if (statusCode == 401) {
                 System.out.println("Erro 401: Chave API inválida ou não autorizada.");
                 return false;
