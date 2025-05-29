@@ -16,13 +16,15 @@ public class Main {
         System.out.print("Digite o e-mail para validar: ");
         String email = scanner.nextLine();
 
-        System.out.println("Digite o número de telefone (Exemplo: 11999999999)");
+        System.out.println("Digite o número de telefone (Exemplo: 11972420186):");
         String telefone = scanner.nextLine();
         
         System.out.println("Validando e-mail pela API Hunter...");
         System.out.println("Validando telefone pela API NumVerify...");
+        
         boolean emailValido = serviceHunter.verificarEmail(email); // # Não esquecer que o método de ServiceHunterApi recebe como parâmetro o email
         boolean telefoneValido = serviceNumVerify.verificarTelefone(telefone);
+        
         if (emailValido) {
             System.out.println("O e-mail '" + email + "' é VÁLIDO.");
         } else {
