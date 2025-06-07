@@ -7,3 +7,13 @@
 *.log
 /target/
 /bin/
+
+# Arquivos de configuração sensíveis (como a chave da API)
+config.properties
+
+# Ignorar arquivos temporários gerados por editores
+*.swp
+
+# Arquivos do sistema operacional
+.DS_Store  # MacOS
+Thumbs.db  # Windows
