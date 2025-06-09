@@ -15,7 +15,7 @@ public class MainGui extends Application {
     private ServiceNumVerifyApi serviceNumVerify = new ServiceNumVerifyApi();
 
     @Override
-    public void start(Stage primaryStage) {  // Aqui você sobrescreve o método start()
+    public void start(Stage primaryStage) {  
 
         // Criar os componentes da interface
         Label labelEmail = new Label("Digite o e-mail para validar:");
@@ -62,6 +62,6 @@ public class MainGui extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);  // Isso lança a aplicação JavaFX
+        launch(args);
     }
 }

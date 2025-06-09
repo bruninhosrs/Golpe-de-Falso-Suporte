@@ -21,7 +21,7 @@ public class ServiceHunterApi {
             Properties prop = new Properties();
             prop.load(input);
             apiKey = prop.getProperty("hunter.api.key");
-            System.out.println("Api key carregada: " + apiKey); // Me mostra minha senha que o Hunter me disponibilizou
+            System.out.println("Api key carregada: " + apiKey);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -30,26 +30,22 @@ public class ServiceHunterApi {
 
     }
 
-    // Método de verificação de e-mail
+    // Método de verificação de e-mail se já está no Banco de Dados
     public boolean verificarEmail(String email) {
-        // Primeiro, verifica se o e-mail já está no banco de dados
+
         if (BancoDados.validarEmail(email)) {
             System.out.println("E-mail encontrado no banco: " + email);
-            return true; // E-mail já está validado e presente no banco
+            return true;
         }
 
-        // Aqui, você pode usar a própria instância da classe para validar o e-mail
-        // Não precisa criar uma nova instância de ServiceHunterApi
-        boolean valido = consultarApiParaValidarEmail(email);
+        String resultado = consultarApiParaValidarEmail(email);
 
-        // Salva o resultado da validação no banco de dados
-        BancoDados.salvarResultadoValidacao("email", email, valido);
+        BancoDados.salvarResultadoValidacao("email", email, resultado);
 
-        return valido;
+        return "valid".equalsIgnoreCase(resultado);
     }
 
-    // Método que faz a requisição à API do Hunter para validar o e-mail
-    private boolean consultarApiParaValidarEmail(String email) {
+    private String consultarApiParaValidarEmail(String email) {
         try {
             String urlStr = "https://api.hunter.io/v2/email-verifier?email=" + email + "&api_key=" + apiKey;
             URI uri = URI.create(urlStr);
@@ -73,19 +69,20 @@ public class ServiceHunterApi {
 
                 // Se status for "valid" e result não for "risky", consideramos válido
                 if ("valid".equalsIgnoreCase(status) && !"risky".equalsIgnoreCase(result)) {
-                    return true;
+                    return "valid";
+                } else if ("risky".equalsIgnoreCase(result)) {
+                    return "risky";
                 } else {
-                    System.out.println("E-mail suspeito ou inválido: " + email);
-                    return false;
+                    return "invalid";
                 }
             } else {
                 System.out.println("Erro na API Hunter: Código " + response.statusCode());
-                return false;
+                return "invalid";
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return "invalid";
         }
     }
 }

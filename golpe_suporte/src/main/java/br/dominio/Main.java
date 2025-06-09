@@ -38,9 +38,8 @@ public class Main {
         }
 
         // Salvar resultado no banco de dados
-        BancoDados.salvarResultadoValidacao("email", email, emailValido);
-        BancoDados.salvarResultadoValidacao("telefone", telefone, telefoneValido);
-
+        BancoDados.salvarResultadoValidacao("email", email, emailValido ? "valid" : "invalid");
+        BancoDados.salvarResultadoValidacao("telefone", telefone, telefoneValido ? "valid" : "invalid");
         scanner.close();
     }
 }

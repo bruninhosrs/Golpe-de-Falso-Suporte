@@ -36,6 +36,5 @@ public abstract class ContatoSuporte {
     }
 
     public abstract boolean isValido(); 
-        // return telefone.replaceAll("[^0-9]", "").length() == 11;
     
 }

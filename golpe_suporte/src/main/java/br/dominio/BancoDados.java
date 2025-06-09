@@ -17,7 +17,7 @@ public class BancoDados {
 
     // Método de validação do telefone
     public static boolean validarTelefone(String telefone) {
-        String query = "SELECT * FROM contatos_validos WHERE telefone = ?";
+        String query = "SELECT * FROM validacoes WHERE tipo = 'telefone' AND valor = ?";
         try (Connection con = conectar();
                 PreparedStatement stmt = con.prepareStatement(query)) {
 
@@ -34,7 +34,7 @@ public class BancoDados {
 
     // Método de validação do e-mail
     public static boolean validarEmail(String email) {
-        String query = "SELECT * FROM contatos_validos WHERE email = ?";
+        String query = "SELECT * FROM validacoes WHERE tipo = 'email' AND valor = ?";
         try (Connection con = conectar();
                 PreparedStatement stmt = con.prepareStatement(query)) {
 
@@ -49,7 +49,7 @@ public class BancoDados {
         }
     }
 
-    public static void salvarResultadoValidacao(String tipoContato, String contato, boolean valido) {
+    public static void salvarResultadoValidacao(String tipoContato, String contato, String resultado) {
 
         String checkQuery = "SELECT * FROM resultados_validacao WHERE tipo_contato = ? AND contato = ?";
 
@@ -61,14 +61,13 @@ public class BancoDados {
 
             ResultSet rs = checkStmt.executeQuery();
 
-
             if (!rs.next()) {
-                String insertQuery = "INSERT INTO resultados_validacao (tipo_contato, contato, valido) VALUES (?, ?, ?)";
+                String insertQuery = "INSERT INTO resultados_validacao (tipo_contato, contato, resultado, data_validacao) VALUES (?, ?, ?, CURRENT_TIMESTAMP)";
 
                 try (PreparedStatement insertStmt = con.prepareStatement(insertQuery)) {
                     insertStmt.setString(1, tipoContato);
                     insertStmt.setString(2, contato);
-                    insertStmt.setBoolean(3, valido);
+                    insertStmt.setString(3, resultado);
                     insertStmt.executeUpdate();
                 }
             } else {

@@ -21,7 +21,7 @@ public class ServiceNumVerifyApi {
             Properties prop = new Properties();
             prop.load(input);
             apiKey = prop.getProperty("numberverify.api.key");
-            System.out.println("Api key carregada: " + apiKey); // Me mostra minha senha que o Hunter me disponibilizou
+            System.out.println("Api key carregada: " + apiKey);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -31,25 +31,23 @@ public class ServiceNumVerifyApi {
     }
 
     public boolean verificarTelefone(String telefone) {
-        // Primeiro, verifica se o e-mail já está no banco de dados
-        if (BancoDados.validarEmail(telefone)) {
-            System.out.println("E-mail encontrado no banco: " + telefone);
-            return true; // E-mail já está validado e presente no banco
+
+        if (BancoDados.validarTelefone(telefone)) {
+            System.out.println("Telefone encontrado no banco: " + telefone);
+            return true;
         }
 
-        // Aqui, você pode usar a própria instância da classe para validar o e-mail
-        // Não precisa criar uma nova instância de ServiceHunterApi
-        boolean valido = consultarApiParaValidarTelefone(telefone);
+        String resultado = consultarApiParaValidarTelefone(telefone);
 
-        // Salva o resultado da validação no banco de dados
-        BancoDados.salvarResultadoValidacao("telefone", telefone, valido);
+        BancoDados.salvarResultadoValidacao("telefone", telefone, resultado);
 
-        return valido;
+        return "valid".equalsIgnoreCase(resultado);
     }
 
-    public boolean consultarApiParaValidarTelefone(String telefone) {
+    public String consultarApiParaValidarTelefone(String telefone) {
         try {
-            String urlStr = "http://apilayer.net/api/validate?access_key=" + apiKey + "&number=" + telefone + "&country_code=BR&format=1";
+            String urlStr = "http://apilayer.net/api/validate?access_key=" + apiKey + "&number=" + telefone
+                    + "&country_code=BR&format=1";
             URI uri = URI.create(urlStr);
 
             HttpClient client = HttpClient.newHttpClient();
@@ -58,23 +56,26 @@ public class ServiceNumVerifyApi {
                     .GET()
                     .build();
 
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(response.body());
 
-                return jsonNode.get("valid").asBoolean();
+                if (jsonNode.get("valid").asBoolean()) {
+                    return "valid";
+                } else {
+                    return "invalid";
+                }
 
             } else {
                 System.out.println("Erro na API NumVerify: Código " + response.statusCode());
-                return false;
+                return "invalid";
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return "invalid";
         }
     }
 
