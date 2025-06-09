@@ -46,8 +46,7 @@ public class ServiceNumVerifyApi {
 
     public String consultarApiParaValidarTelefone(String telefone) {
         try {
-            String urlStr = "http://apilayer.net/api/validate?access_key=" + apiKey + "&number=" + telefone
-                    + "&country_code=BR&format=1";
+            String urlStr = "http://apilayer.net/api/validate?access_key=" + apiKey + "&number=" + telefone + "&country_code=BR&format=1";
             URI uri = URI.create(urlStr);
 
             HttpClient client = HttpClient.newHttpClient();

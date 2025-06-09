@@ -59,7 +59,6 @@ public class ServiceHunterApi {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                // Faz o parsing da resposta JSON da API
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(response.body());
 
